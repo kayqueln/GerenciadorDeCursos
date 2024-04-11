@@ -2,6 +2,7 @@ package br.com.fiap.GerenciadorDeCursos.model;
 
 import br.com.fiap.GerenciadorDeCursos.dto.aluno.AtualizarAlunoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.aluno.CadastroAlunoDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -33,6 +34,7 @@ public class Aluno {
     private LocalDate dataNascimento;
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Inscricao> inscricoes;
 
     public Aluno(CadastroAlunoDTO cadastroAlunoDTO) {

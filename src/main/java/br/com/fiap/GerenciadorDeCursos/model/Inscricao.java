@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -11,20 +12,27 @@ import java.util.Date;
 @Entity
 @Table
 @Data
+@NoArgsConstructor
 public class Inscricao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "curso_id")
-    private Curso curso;
-
-    @ManyToOne
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
+
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
+    private Curso curso;
 
     @NotNull
     @PastOrPresent
     private LocalDateTime dataInscricao;
+
+    public Inscricao(Curso curso, Aluno aluno, LocalDateTime dataInscricao) {
+        this.curso = curso;
+        this.aluno = aluno;
+        this.dataInscricao = dataInscricao;
+    }
 }
