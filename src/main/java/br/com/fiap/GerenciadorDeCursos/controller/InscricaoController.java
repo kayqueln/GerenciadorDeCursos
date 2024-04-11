@@ -3,8 +3,13 @@ package br.com.fiap.GerenciadorDeCursos.controller;
 import br.com.fiap.GerenciadorDeCursos.dto.inscricao.CadastroInscricaoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.inscricao.DetalhamentoInscricaoDTO;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
+import br.com.fiap.GerenciadorDeCursos.model.Aluno;
 import br.com.fiap.GerenciadorDeCursos.model.Inscricao;
 import br.com.fiap.GerenciadorDeCursos.service.InscricaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +27,10 @@ public class InscricaoController {
     @Autowired
     private InscricaoService inscricaoService;
 
+    @Operation(summary = "Inscreve os aluno nos curso", responses = {
+            @ApiResponse(responseCode = "201", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Inscricao.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao inscrever aluno")})
     @PostMapping
     public ResponseEntity inscreverAluno(@RequestBody CadastroInscricaoDTO cadastroInscricaoDTO){
         try{
@@ -32,6 +41,9 @@ public class InscricaoController {
         }
     }
 
+    @Operation(summary = "Lista as inscrições da base de dados", responses = {
+            @ApiResponse(responseCode = "201", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Inscricao.class)))})
     @GetMapping
     public ResponseEntity<List<DetalhamentoInscricaoDTO>> listarInscricoes(){
         List<DetalhamentoInscricaoDTO> inscricaos = inscricaoService.listarInscricoes();

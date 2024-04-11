@@ -11,6 +11,8 @@ import br.com.fiap.GerenciadorDeCursos.repository.CursoRepository;
 import br.com.fiap.GerenciadorDeCursos.repository.InscricaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class InscricaoService {
     @Autowired
     private CursoRepository cursoRepository;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public Inscricao inscreverUmAluno(CadastroInscricaoDTO cadastroInscricaoDTO) throws NotFoundResourceException {
         Optional<Curso> curso = cursoRepository.findById(cadastroInscricaoDTO.idCurso());
         Optional<Aluno> aluno = alunoRepository.findById(cadastroInscricaoDTO.idAluno());

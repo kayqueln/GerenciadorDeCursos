@@ -5,8 +5,14 @@ import br.com.fiap.GerenciadorDeCursos.dto.professor.AtualizarProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.CadastroProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.DetalhamentoProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
+import br.com.fiap.GerenciadorDeCursos.model.Aluno;
+import br.com.fiap.GerenciadorDeCursos.model.Curso;
 import br.com.fiap.GerenciadorDeCursos.model.Professor;
 import br.com.fiap.GerenciadorDeCursos.service.ProfessorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +26,10 @@ public class ProfessorController {
     @Autowired
     private ProfessorService ProfessorService;
 
+    @Operation(summary = "Cadastra um professor na base de dados", responses = {
+            @ApiResponse(responseCode = "201", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Professor.class))),
+            @ApiResponse(responseCode = "400", description = "Erro ao cadastrar professor")})
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody CadastroProfessorDTO cadastroProfessorDTO){
         try {
@@ -30,6 +40,9 @@ public class ProfessorController {
         }
     }
 
+    @Operation(summary = "Lista os professores da base de dados", responses = {
+            @ApiResponse(responseCode = "201", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Professor.class)))})
     @GetMapping
     public ResponseEntity buscarTodos(){
         try {
@@ -40,6 +53,10 @@ public class ProfessorController {
         }
     }
 
+    @Operation(summary = "Busca um professor pelo ID", responses = {
+            @ApiResponse(responseCode = "200", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Professor.class))),
+            @ApiResponse(responseCode = "400", description = "Professor não encontrado")})
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id){
         try {
@@ -50,6 +67,10 @@ public class ProfessorController {
         }
     }
 
+    @Operation(summary = "Altera um professor pelo ID", responses = {
+            @ApiResponse(responseCode = "200", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Professor.class))),
+            @ApiResponse(responseCode = "400", description = "Professor não encontrado")})
     @PutMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AtualizarProfessorDTO atualizarProfessorDTO){
         try {
@@ -60,6 +81,10 @@ public class ProfessorController {
         }
     }
 
+    @Operation(summary = "Deleta um professor pelo ID", responses = {
+            @ApiResponse(responseCode = "200", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Professor.class))),
+            @ApiResponse(responseCode = "400", description = "Professor não encontrado")})
     @DeleteMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id){
         try {

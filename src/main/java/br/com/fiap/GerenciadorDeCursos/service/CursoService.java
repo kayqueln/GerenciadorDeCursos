@@ -11,6 +11,8 @@ import br.com.fiap.GerenciadorDeCursos.model.Professor;
 import br.com.fiap.GerenciadorDeCursos.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Curso salvarCurso(CadastroCursoDTO cadastroCursoDTO){
         Curso novoCurso = new Curso(cadastroCursoDTO);
 
