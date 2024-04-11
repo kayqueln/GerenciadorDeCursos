@@ -1,11 +1,12 @@
 package br.com.fiap.GerenciadorDeCursos.controller;
 
-import br.com.fiap.GerenciadorDeCursos.dto.aluno.AtualizarAlunoDTO;
-import br.com.fiap.GerenciadorDeCursos.dto.aluno.CadastroAlunoDTO;
-import br.com.fiap.GerenciadorDeCursos.dto.aluno.DetalhamentoAlunoDTO;
+
+import br.com.fiap.GerenciadorDeCursos.dto.professor.AtualizarProfessorDTO;
+import br.com.fiap.GerenciadorDeCursos.dto.professor.CadastroProfessorDTO;
+import br.com.fiap.GerenciadorDeCursos.dto.professor.DetalhamentoProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
-import br.com.fiap.GerenciadorDeCursos.model.Aluno;
-import br.com.fiap.GerenciadorDeCursos.service.AlunoService;
+import br.com.fiap.GerenciadorDeCursos.model.Professor;
+import br.com.fiap.GerenciadorDeCursos.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,17 +15,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/aluno")
-public class AlunoController {
-
+@RequestMapping("/professor")
+public class ProfessorController {
     @Autowired
-    private AlunoService alunoService;
+    private ProfessorService ProfessorService;
 
     @PostMapping
-    public ResponseEntity cadastrar(@RequestBody CadastroAlunoDTO cadastroAlunoDTO){
+    public ResponseEntity cadastrar(@RequestBody CadastroProfessorDTO cadastroProfessorDTO){
         try {
-            DetalhamentoAlunoDTO alunos = alunoService.salvarAluno(cadastroAlunoDTO);
-            return ResponseEntity.status(201).body(alunos);
+            DetalhamentoProfessorDTO Professors = ProfessorService.salvarProfessor(cadastroProfessorDTO);
+            return ResponseEntity.status(201).body(Professors);
         }catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -33,8 +33,8 @@ public class AlunoController {
     @GetMapping
     public ResponseEntity buscarTodos(){
         try {
-            List<Aluno> alunos = alunoService.buscarTodosAlunos();
-            return ResponseEntity.status(200).body(alunos);
+            List<Professor> Professors = ProfessorService.buscarTodosProfessors();
+            return ResponseEntity.status(200).body(Professors);
         }catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -43,18 +43,18 @@ public class AlunoController {
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id){
         try {
-            Aluno aluno = alunoService.buscarAlunoPorId(id);
-            return ResponseEntity.status(200).body(aluno);
+            Professor Professor = ProfessorService.buscarProfessorPorId(id);
+            return ResponseEntity.status(200).body(Professor);
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AtualizarAlunoDTO atualizarAlunoDTO){
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AtualizarProfessorDTO atualizarProfessorDTO){
         try {
-            Aluno aluno = alunoService.atualizarAluno(id, atualizarAlunoDTO);
-            return ResponseEntity.status(200).body(aluno);
+            Professor Professor = ProfessorService.atualizarProfessor(id, atualizarProfessorDTO);
+            return ResponseEntity.status(200).body(Professor);
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -63,7 +63,7 @@ public class AlunoController {
     @DeleteMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id){
         try {
-            alunoService.deletarAluno(id);
+            ProfessorService.deletarProfessor(id);
             return ResponseEntity.status(204).build();
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
