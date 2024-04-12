@@ -9,7 +9,11 @@ import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
 
 public record CadastroInscricaoDTO(
+        @NotNull
         Long idAluno,
-        Long idCurso
+        @NotNull
+        Long idCurso,
+        @PastOrPresent
+        LocalDateTime dataDeInscricao
 ) {
 }

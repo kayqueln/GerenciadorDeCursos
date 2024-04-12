@@ -1,5 +1,6 @@
 package br.com.fiap.GerenciadorDeCursos.model;
 
+import br.com.fiap.GerenciadorDeCursos.dto.inscricao.CadastroInscricaoDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
