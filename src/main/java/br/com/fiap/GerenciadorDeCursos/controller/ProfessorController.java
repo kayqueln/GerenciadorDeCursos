@@ -12,20 +12,23 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Controller
 @RequestMapping("/professor")
 public class ProfessorController {
     @Autowired
-    private ProfessorService ProfessorService;
+    private ProfessorService professorService;
 
     @Operation(summary = "Cadastra um professor na base de dados", responses = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
@@ -34,7 +37,7 @@ public class ProfessorController {
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody CadastroProfessorDTO cadastroProfessorDTO){
         try {
-            DetalhamentoProfessorDTO Professors = ProfessorService.salvarProfessor(cadastroProfessorDTO);
+            DetalhamentoProfessorDTO Professors = professorService.salvarProfessor(cadastroProfessorDTO);
             return ResponseEntity.status(201).body(Professors);
         }catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
@@ -47,7 +50,7 @@ public class ProfessorController {
     @GetMapping
     public ResponseEntity buscarTodos(){
         try {
-            List<Professor> Professors = ProfessorService.buscarTodosProfessors();
+            List<Professor> Professors = professorService.buscarTodosProfessors();
             return ResponseEntity.status(200).body(Professors);
         }catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
@@ -61,7 +64,7 @@ public class ProfessorController {
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id){
         try {
-            Professor professor = ProfessorService.buscarProfessorPorId(id);
+            Professor professor = professorService.buscarProfessorPorId(id);
             Link link = linkTo(ProfessorController.class).slash(professor.getId()).withSelfRel();
             professor.add(link);
             return ResponseEntity.status(200).body(professor);
@@ -77,7 +80,7 @@ public class ProfessorController {
     @PutMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AtualizarProfessorDTO atualizarProfessorDTO){
         try {
-            Professor Professor = ProfessorService.atualizarProfessor(id, atualizarProfessorDTO);
+            Professor Professor = professorService.atualizarProfessor(id, atualizarProfessorDTO);
             return ResponseEntity.status(200).body(Professor);
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
@@ -91,10 +94,11 @@ public class ProfessorController {
     @DeleteMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id){
         try {
-            ProfessorService.deletarProfessor(id);
+            professorService.deletarProfessor(id);
             return ResponseEntity.status(204).build();
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
+
 }

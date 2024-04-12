@@ -15,21 +15,21 @@ import java.util.Optional;
 @Service
 public class ProfessorService {
     @Autowired
-    private ProfessorRepository ProfessorRepository;
+    private ProfessorRepository professorRepository;
 
     public DetalhamentoProfessorDTO salvarProfessor(CadastroProfessorDTO cadastroProfessorDTO){
         Professor novoProfessor = new Professor(cadastroProfessorDTO);
-        ProfessorRepository.save(novoProfessor);
+        professorRepository.save(novoProfessor);
 
         return new DetalhamentoProfessorDTO(novoProfessor);
     }
 
     public List<Professor> buscarTodosProfessors(){
-        return ProfessorRepository.findAll();
+        return professorRepository.findAll();
     }
 
     public Professor buscarProfessorPorId(Long id) throws NotFoundResourceException {
-        Optional<Professor> Professor = ProfessorRepository.findById(id);
+        Optional<Professor> Professor = professorRepository.findById(id);
         if(Professor.isPresent()){
             return Professor.get();
         }else{
@@ -38,11 +38,11 @@ public class ProfessorService {
     }
 
     public Professor atualizarProfessor(Long id, AtualizarProfessorDTO atualizarProfessorDTO) throws NotFoundResourceException {
-        Optional<Professor> Professor = ProfessorRepository.findById(id);
+        Optional<Professor> Professor = professorRepository.findById(id);
 
         if(Professor.isPresent()){
             Professor.get().atualizarProfessor(atualizarProfessorDTO);
-            ProfessorRepository.save(Professor.get());
+            professorRepository.save(Professor.get());
             return Professor.get();
         }else{
             throw new NotFoundResourceException("Não foi possível encontrar esse Professor");
@@ -50,9 +50,9 @@ public class ProfessorService {
     }
 
     public void deletarProfessor(Long id) throws NotFoundResourceException {
-        Optional<Professor> Professor = ProfessorRepository.findById(id);
+        Optional<Professor> Professor = professorRepository.findById(id);
         if(Professor.isPresent()){
-            ProfessorRepository.deleteById(id);
+            professorRepository.deleteById(id);
         }else{
             throw new NotFoundResourceException("Não foi possível encontrar esse Professor");
         }

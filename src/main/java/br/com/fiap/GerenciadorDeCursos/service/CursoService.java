@@ -1,30 +1,22 @@
 package br.com.fiap.GerenciadorDeCursos.service;
 
-import br.com.fiap.GerenciadorDeCursos.controller.AlunoController;
-import br.com.fiap.GerenciadorDeCursos.controller.CursoController;
-import br.com.fiap.GerenciadorDeCursos.controller.ProfessorController;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.AtualizarCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.CadastroCursoDTO;
+import br.com.fiap.GerenciadorDeCursos.dto.curso.PropriedadesCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.materia.CadastroMateriasDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.CadastroProfessorDTO;
+import br.com.fiap.GerenciadorDeCursos.dto.professor.DetalhamentoProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
-import br.com.fiap.GerenciadorDeCursos.model.Curso;
-import br.com.fiap.GerenciadorDeCursos.model.Materia;
-import br.com.fiap.GerenciadorDeCursos.model.Professor;
+import br.com.fiap.GerenciadorDeCursos.model.*;
 import br.com.fiap.GerenciadorDeCursos.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CursoService {
@@ -92,5 +84,25 @@ public class CursoService {
         }
     }
 
+    public List<PropriedadesCursoDTO> buscarTodosCursosDetalhados() {
+        List<Curso> cursos = cursoRepository.findAll();
+        List<PropriedadesCursoDTO> cursosDetalhados = new ArrayList<>();
+        for (Curso curso : cursos){
+            PropriedadesCursoDTO propriedadesCursoDTO = new PropriedadesCursoDTO(curso);
+            cursosDetalhados.add(propriedadesCursoDTO);
+        }
 
+        return cursosDetalhados;
+    }
+
+    public List<Professor> buscarProfessoresCurso(Long cursoId){
+        Optional<Curso> curso = cursoRepository.findById(cursoId);
+        return curso.get().getProfessores();
+    }
+
+    public List<Aluno> buscarAlunosCurso(Long cursoId) {
+        List<Aluno> alunos = cursoRepository.findAlunoByCursoId(cursoId);
+        System.out.println(alunos);
+        return alunos;
+    }
 }

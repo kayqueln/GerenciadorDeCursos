@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Table
 @Data
 @NoArgsConstructor
-public class Aluno {
+public class Aluno extends RepresentationModel<Aluno> {
     @Id
     @Column(name = "aluno_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

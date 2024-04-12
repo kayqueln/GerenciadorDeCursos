@@ -19,6 +19,7 @@ import java.util.List;
 public class Professor extends RepresentationModel<Professor> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "professor_id")
     private Long id;
 
     @NotBlank

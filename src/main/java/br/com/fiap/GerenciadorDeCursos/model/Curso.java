@@ -2,6 +2,7 @@ package br.com.fiap.GerenciadorDeCursos.model;
 
 import br.com.fiap.GerenciadorDeCursos.dto.curso.AtualizarCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.CadastroCursoDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -31,10 +32,16 @@ public class Curso extends RepresentationModel<Curso> {
     private String descricao;
 
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Materia> materias;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
+    @JsonIgnore
     private List<Professor> professores;
+
+    @OneToMany
+    @JsonIgnore
+    private List<Inscricao> inscricoes;
 
     public Curso(CadastroCursoDTO cadastroCursoDTO) {
         this.nome = cadastroCursoDTO.nome();

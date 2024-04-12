@@ -7,6 +7,7 @@ import br.com.fiap.GerenciadorDeCursos.dto.curso.DetalhamentoCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
 import br.com.fiap.GerenciadorDeCursos.model.Aluno;
 import br.com.fiap.GerenciadorDeCursos.model.Curso;
+import br.com.fiap.GerenciadorDeCursos.model.Professor;
 import br.com.fiap.GerenciadorDeCursos.service.CursoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,9 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Controller
@@ -38,13 +36,22 @@ public class CursoController {
             @ApiResponse(responseCode = "200", description = "Sucesso",
                     content = @Content(schema = @Schema(implementation = Curso.class)))})
     @GetMapping("/hateoas")
-    public ResponseEntity<List<EntityModel<Curso>>> buscarCursosComHateoas(){
-        List<EntityModel<Curso>> cursos = cursoService.buscarTodosCursos().stream()
-                .map(curso -> EntityModel.of(curso,
-                        linkTo(methodOn(CursoController.class).buscarPorId(curso.getId())).withSelfRel()),
-                        linkTo((methodOn(ProfessorController.class).buscarPorId())))
-                .collect(Collectors.toList());
-        return ResponseEntity.status(200).body(cursos);
+    public ResponseEntity<CollectionModel<Curso>> buscarCursosComHateoas(){
+        List<Curso> cursos = cursoService.buscarTodosCursos();
+        for (Curso curso : cursos){
+            Long curso_id = curso.getId();
+            Link selfLink = linkTo(methodOn(CursoController.class).buscarPorId(curso_id)).withSelfRel();
+            curso.add(selfLink);
+            Link professorLink = linkTo(methodOn(CursoController.class)
+                    .buscarProfessoresCurso(curso_id)).withRel("professores");
+            curso.add(professorLink);
+            Link alunoLink = linkTo(methodOn(CursoController.class)
+                    .buscarAlunosCurso(curso_id)).withRel("alunos");
+            curso.add(alunoLink);
+        }
+        Link link = linkTo(CursoController.class).withSelfRel();
+        CollectionModel<Curso> retorno = CollectionModel.of(cursos, link);
+        return ResponseEntity.status(200).body(retorno);
     }
 
     @Operation(summary = "Cadastra um curso na base de dados", responses = {
@@ -81,6 +88,7 @@ public class CursoController {
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id){
         try {
+            System.out.println(buscarAlunosCurso(id));
             Curso curso = cursoService.buscarCursoPorId(id);
             Link link = linkTo(CursoController.class).slash(curso.getId()).withSelfRel();
             curso.add(link);
@@ -119,6 +127,39 @@ public class CursoController {
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
+    }
+
+
+    //Implementações do Hateoas
+
+    @GetMapping("/{curso_id}/professores")
+    public ResponseEntity<CollectionModel<Professor>> buscarProfessoresCurso(@PathVariable final Long curso_id){
+        List<Professor> professores = cursoService.buscarProfessoresCurso(curso_id);
+        for(Professor professor : professores){
+            Link selfLink = linkTo(methodOn(ProfessorController.class)
+                    .buscarPorId(professor.getId())).withSelfRel();
+            professor.add(selfLink);
+        }
+        Link link = linkTo(methodOn(CursoController.class)
+                .buscarProfessoresCurso(curso_id)).withSelfRel();
+        CollectionModel<Professor> retorno = CollectionModel.of(professores, link);
+
+        return ResponseEntity.status(200).body(retorno);
+    }
+
+    @GetMapping("/{curso_id}/alunos")
+    public ResponseEntity<CollectionModel<Aluno>> buscarAlunosCurso(@PathVariable final Long curso_id) {
+        List<Aluno> alunos = cursoService.buscarAlunosCurso(curso_id);
+        for(Aluno aluno : alunos){
+            Link selfLink = linkTo(methodOn(AlunoController.class)
+                    .buscarPorId(aluno.getId())).withSelfRel();
+            aluno.add(selfLink);
+        }
+        Link link = linkTo(methodOn(CursoController.class)
+                .buscarAlunosCurso(curso_id)).withSelfRel();
+        CollectionModel<Aluno> retorno = CollectionModel.of(alunos, link);
+
+        return ResponseEntity.status(200).body(retorno);
     }
     
 }
