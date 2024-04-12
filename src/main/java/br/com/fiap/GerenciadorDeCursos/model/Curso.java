@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 @Table
 @Data
 @NoArgsConstructor
-public class Curso {
+public class Curso extends RepresentationModel<Curso> {
     @Id
     @Column(name = "curso_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -13,17 +13,39 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/curso")
 public class CursoController {
     @Autowired
-    private CursoService CursoService;
+    private CursoService cursoService;
+
+    @Operation(summary = "Busca os cursos na base de dados com Hateoas", responses = {
+            @ApiResponse(responseCode = "200", description = "Sucesso",
+                    content = @Content(schema = @Schema(implementation = Curso.class)))})
+    @GetMapping("/hateoas")
+    public ResponseEntity<List<EntityModel<Curso>>> buscarCursosComHateoas(){
+        List<EntityModel<Curso>> cursos = cursoService.buscarTodosCursos().stream()
+                .map(curso -> EntityModel.of(curso,
+                        linkTo(methodOn(CursoController.class).buscarPorId(curso.getId())).withSelfRel()),
+                        linkTo((methodOn(ProfessorController.class).buscarPorId())))
+                .collect(Collectors.toList());
+        return ResponseEntity.status(200).body(cursos);
+    }
 
     @Operation(summary = "Cadastra um curso na base de dados", responses = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
@@ -32,7 +54,7 @@ public class CursoController {
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody CadastroCursoDTO cadastroCursoDTO){
         try {
-            Curso curso = CursoService.salvarCurso(cadastroCursoDTO);
+            Curso curso = cursoService.salvarCurso(cadastroCursoDTO);
             return ResponseEntity.status(201).body(new DetalhamentoCursoDTO(curso));
         }catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
@@ -45,8 +67,8 @@ public class CursoController {
     @GetMapping
     public ResponseEntity buscarTodos(){
         try {
-            List<Curso> Cursos = CursoService.buscarTodosCursos();
-            return ResponseEntity.status(200).body(Cursos);
+            List<Curso> cursos = cursoService.buscarTodosCursos();
+            return ResponseEntity.status(200).body(cursos);
         }catch (Exception e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -59,8 +81,10 @@ public class CursoController {
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id){
         try {
-            Curso Curso = CursoService.buscarCursoPorId(id);
-            return ResponseEntity.status(200).body(Curso);
+            Curso curso = cursoService.buscarCursoPorId(id);
+            Link link = linkTo(CursoController.class).slash(curso.getId()).withSelfRel();
+            curso.add(link);
+            return ResponseEntity.status(200).body(curso);
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -73,7 +97,7 @@ public class CursoController {
     @PutMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id, @RequestBody AtualizarCursoDTO atualizarCursoDTO){
         try {
-            Curso Curso = CursoService.atualizarCurso(id, atualizarCursoDTO);
+            Curso Curso = cursoService.atualizarCurso(id, atualizarCursoDTO);
             return ResponseEntity.status(200).body(Curso);
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
@@ -90,7 +114,7 @@ public class CursoController {
     @DeleteMapping("/{id}")
     public ResponseEntity atualizar(@PathVariable Long id){
         try {
-            CursoService.deletarCurso(id);
+            cursoService.deletarCurso(id);
             return ResponseEntity.status(204).build();
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());

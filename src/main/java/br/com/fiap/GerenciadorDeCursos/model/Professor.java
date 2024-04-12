@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Table
 @Data
 @NoArgsConstructor
-public class Professor {
+public class Professor extends RepresentationModel<Professor> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

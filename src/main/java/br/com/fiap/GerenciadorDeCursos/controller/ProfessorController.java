@@ -5,8 +5,6 @@ import br.com.fiap.GerenciadorDeCursos.dto.professor.AtualizarProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.CadastroProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.DetalhamentoProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
-import br.com.fiap.GerenciadorDeCursos.model.Aluno;
-import br.com.fiap.GerenciadorDeCursos.model.Curso;
 import br.com.fiap.GerenciadorDeCursos.model.Professor;
 import br.com.fiap.GerenciadorDeCursos.service.ProfessorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,11 +12,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Controller
 @RequestMapping("/professor")
@@ -60,8 +61,10 @@ public class ProfessorController {
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id){
         try {
-            Professor Professor = ProfessorService.buscarProfessorPorId(id);
-            return ResponseEntity.status(200).body(Professor);
+            Professor professor = ProfessorService.buscarProfessorPorId(id);
+            Link link = linkTo(ProfessorController.class).slash(professor.getId()).withSelfRel();
+            professor.add(link);
+            return ResponseEntity.status(200).body(professor);
         }catch (NotFoundResourceException e){
             return ResponseEntity.status(400).body(e.getMessage());
         }

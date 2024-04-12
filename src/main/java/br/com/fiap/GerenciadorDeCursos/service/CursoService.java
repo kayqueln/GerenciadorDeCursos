@@ -1,5 +1,8 @@
 package br.com.fiap.GerenciadorDeCursos.service;
 
+import br.com.fiap.GerenciadorDeCursos.controller.AlunoController;
+import br.com.fiap.GerenciadorDeCursos.controller.CursoController;
+import br.com.fiap.GerenciadorDeCursos.controller.ProfessorController;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.AtualizarCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.CadastroCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.materia.CadastroMateriasDTO;
@@ -10,13 +13,18 @@ import br.com.fiap.GerenciadorDeCursos.model.Materia;
 import br.com.fiap.GerenciadorDeCursos.model.Professor;
 import br.com.fiap.GerenciadorDeCursos.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CursoService {
@@ -83,4 +91,6 @@ public class CursoService {
             throw new NotFoundResourceException("Não foi possível encontrar esse Curso");
         }
     }
+
+
 }
