@@ -2,6 +2,7 @@ package br.com.fiap.GerenciadorDeCursos.service;
 
 import br.com.fiap.GerenciadorDeCursos.dto.inscricao.CadastroInscricaoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.inscricao.DetalhamentoInscricaoDTO;
+import br.com.fiap.GerenciadorDeCursos.exceptions.CourseFullException;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
 import br.com.fiap.GerenciadorDeCursos.model.Aluno;
 import br.com.fiap.GerenciadorDeCursos.model.Curso;
@@ -32,16 +33,21 @@ public class InscricaoService {
     private CursoRepository cursoRepository;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Inscricao inscreverUmAluno(CadastroInscricaoDTO cadastroInscricaoDTO) throws NotFoundResourceException {
-        Optional<Curso> curso = cursoRepository.findById(cadastroInscricaoDTO.idCurso());
+    public Inscricao inscreverUmAluno(CadastroInscricaoDTO cadastroInscricaoDTO) throws NotFoundResourceException, CourseFullException {
         Optional<Aluno> aluno = alunoRepository.findById(cadastroInscricaoDTO.idAluno());
+        Optional<Curso> curso = cursoRepository.findById(cadastroInscricaoDTO.idCurso());
 
-        if (!curso.isPresent()) throw new NotFoundResourceException("Não foi possivel encontrar o curso associado");
         if(!aluno.isPresent()) throw new NotFoundResourceException("Não foi possivel encontrar o aluno associado");
-
-        curso.get().getNome();
+        if(!curso.isPresent()) throw new NotFoundResourceException("Não foi possivel encontrar o curso associado");
 
         Inscricao inscricao = new Inscricao(curso.get(), aluno.get(), LocalDateTime.now());
+
+        Integer quantidadeInscricoesCurso = inscricaoRepository.getQuantidadeCursos(curso.get().getId());
+
+        if(quantidadeInscricoesCurso >= 30){
+            throw new CourseFullException("O limite de inscrições nesse curso foi atingido");
+        }
+
         inscricaoRepository.save(inscricao);
         return inscricao;
     }

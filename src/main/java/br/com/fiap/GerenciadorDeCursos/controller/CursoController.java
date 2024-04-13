@@ -85,13 +85,12 @@ public class CursoController {
     }
 
     @Operation(summary = "Busca um curso pelo ID", responses = {
-            @ApiResponse(responseCode = "204", description = "Sucesso",
+            @ApiResponse(responseCode = "200", description = "Sucesso",
                     content = @Content(schema = @Schema(implementation = Curso.class))),
             @ApiResponse(responseCode = "400", description = "Curso não encontrado")})
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id){
         try {
-            System.out.println(buscarAlunosCurso(id));
             Curso curso = cursoService.buscarCursoPorId(id);
             Link link = linkTo(CursoController.class).slash(curso.getId()).withSelfRel();
             curso.add(link);
@@ -102,7 +101,7 @@ public class CursoController {
     }
 
     @Operation(summary = "Atualiza um curso pelo ID", responses = {
-            @ApiResponse(responseCode = "204", description = "Sucesso",
+            @ApiResponse(responseCode = "200", description = "Sucesso",
                     content = @Content(schema = @Schema(implementation = Curso.class))),
             @ApiResponse(responseCode = "400", description = "Curso não encontrado")})
     @PutMapping("/{id}")

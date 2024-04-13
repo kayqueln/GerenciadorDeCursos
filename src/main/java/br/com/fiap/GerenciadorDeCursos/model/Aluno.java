@@ -30,9 +30,16 @@ public class Aluno extends RepresentationModel<Aluno> {
     @Email
     private String email;
 
+    @NotBlank
+    private String cpf;
+
     @NotNull
     @Past
     private LocalDate dataNascimento;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "endereco_id")
+    private Endereco endereco;
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -41,7 +48,9 @@ public class Aluno extends RepresentationModel<Aluno> {
     public Aluno(CadastroAlunoDTO cadastroAlunoDTO) {
         this.nome = cadastroAlunoDTO.nome();
         this.email = cadastroAlunoDTO.email();
+        this.cpf = cadastroAlunoDTO.cpf();
         this.dataNascimento = cadastroAlunoDTO.dataNascimento();
+        this.endereco = cadastroAlunoDTO.endereco();
     }
 
     public void atualizarAluno(AtualizarAlunoDTO atualizarAlunoDTO) {

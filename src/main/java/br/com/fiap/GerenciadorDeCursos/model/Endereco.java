@@ -1,7 +1,9 @@
 package br.com.fiap.GerenciadorDeCursos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -9,13 +11,19 @@ import lombok.Data;
 @Table
 public class Endereco {
     @Id
+    @Column(name = "endereco_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo_endereco;
+    private Long id;
     @NotBlank
-    private int cep;
+    private String cep;
     @NotBlank
     private String rua;
-    @NotBlank
+    @NotNull
     private int numero;
     private String complemento;
+
+    @OneToOne
+    @JoinColumn(name = "aluno_id")
+    @JsonIgnore
+    private Aluno aluno;
 }

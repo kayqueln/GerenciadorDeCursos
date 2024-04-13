@@ -5,7 +5,6 @@ import br.com.fiap.GerenciadorDeCursos.dto.curso.CadastroCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.PropriedadesCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.materia.CadastroMateriasDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.CadastroProfessorDTO;
-import br.com.fiap.GerenciadorDeCursos.dto.professor.DetalhamentoProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
 import br.com.fiap.GerenciadorDeCursos.model.*;
 import br.com.fiap.GerenciadorDeCursos.repository.CursoRepository;
@@ -55,9 +54,9 @@ public class CursoService {
     }
 
     public Curso buscarCursoPorId(Long id) throws NotFoundResourceException {
-        Optional<Curso> Curso = cursoRepository.findById(id);
-        if(Curso.isPresent()){
-            return Curso.get();
+        Optional<Curso> curso = cursoRepository.findById(id);
+        if(curso.isPresent()){
+            return curso.get();
         }else{
             throw new NotFoundResourceException("Não foi possível encontrar esse Curso");
         }

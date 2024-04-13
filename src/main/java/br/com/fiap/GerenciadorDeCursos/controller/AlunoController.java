@@ -3,6 +3,7 @@ package br.com.fiap.GerenciadorDeCursos.controller;
 import br.com.fiap.GerenciadorDeCursos.dto.aluno.AtualizarAlunoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.aluno.CadastroAlunoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.aluno.DetalhamentoAlunoDTO;
+import br.com.fiap.GerenciadorDeCursos.exceptions.ErrorMessage;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
 import br.com.fiap.GerenciadorDeCursos.model.Aluno;
 import br.com.fiap.GerenciadorDeCursos.service.AlunoService;
@@ -23,6 +24,8 @@ public class AlunoController {
 
     @Autowired
     private AlunoService alunoService;
+    @Autowired
+    private ErrorMessage error;
 
     @Operation(summary = "Cadastra um aluno na base de dados", responses = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
@@ -34,7 +37,8 @@ public class AlunoController {
             DetalhamentoAlunoDTO alunos = alunoService.salvarAluno(cadastroAlunoDTO);
             return ResponseEntity.status(201).body(alunos);
         }catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 

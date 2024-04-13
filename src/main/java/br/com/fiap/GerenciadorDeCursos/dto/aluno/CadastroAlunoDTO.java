@@ -1,5 +1,6 @@
 package br.com.fiap.GerenciadorDeCursos.dto.aluno;
 
+import br.com.fiap.GerenciadorDeCursos.model.Endereco;
 import br.com.fiap.GerenciadorDeCursos.model.Inscricao;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -15,8 +16,11 @@ public record CadastroAlunoDTO(
     @NotBlank
     @Email
     String email,
+    String cpf,
     @NotNull
     @Past
-    LocalDate dataNascimento
+    LocalDate dataNascimento,
+    @NotNull
+    Endereco endereco
 ) {
 }

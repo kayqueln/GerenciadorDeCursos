@@ -2,6 +2,8 @@ package br.com.fiap.GerenciadorDeCursos.controller;
 
 import br.com.fiap.GerenciadorDeCursos.dto.inscricao.CadastroInscricaoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.inscricao.DetalhamentoInscricaoDTO;
+import br.com.fiap.GerenciadorDeCursos.exceptions.CourseFullException;
+import br.com.fiap.GerenciadorDeCursos.exceptions.ErrorMessage;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
 import br.com.fiap.GerenciadorDeCursos.model.Aluno;
 import br.com.fiap.GerenciadorDeCursos.model.Inscricao;
@@ -27,17 +29,21 @@ public class InscricaoController {
     @Autowired
     private InscricaoService inscricaoService;
 
+    @Autowired
+    private ErrorMessage error;
+
     @Operation(summary = "Inscreve os aluno nos curso", responses = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
                     content = @Content(schema = @Schema(implementation = Inscricao.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao inscrever aluno")})
     @PostMapping
-    public ResponseEntity inscreverAluno(@RequestBody CadastroInscricaoDTO cadastroInscricaoDTO){
-        try{
+    public ResponseEntity inscreverAluno(@RequestBody CadastroInscricaoDTO cadastroInscricaoDTO) {
+        try {
             Inscricao inscricao = inscricaoService.inscreverUmAluno(cadastroInscricaoDTO);
             return ResponseEntity.status(201).body(new DetalhamentoInscricaoDTO(inscricao));
-        }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+        }catch (CourseFullException | NotFoundResourceException e){
+            error = new ErrorMessage(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
