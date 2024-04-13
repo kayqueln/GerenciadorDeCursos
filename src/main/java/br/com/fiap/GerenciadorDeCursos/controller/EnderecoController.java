@@ -40,7 +40,8 @@ public class EnderecoController {
             List<Endereco> enderecos = enderecoService.buscarTodosEnderecos();
             return ResponseEntity.status(200).body(enderecos);
         }catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -54,7 +55,7 @@ public class EnderecoController {
             Endereco endereco = enderecoService.buscarPorId(id);
             return ResponseEntity.status(200).body(endereco);
         }catch (NotFoundResourceException e){
-            error = new ErrorMessage(e.getMessage());
+            error.setError(e.getMessage());
             return ResponseEntity.status(400).body(error);
         }
     }

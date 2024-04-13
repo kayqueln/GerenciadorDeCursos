@@ -37,6 +37,18 @@ public class Aluno extends RepresentationModel<Aluno> {
     @Past
     private LocalDate dataNascimento;
 
+    @NotNull
+    @Past
+    private LocalDate dataDeConclusaoDaGraduacao;
+
+    @NotNull
+    private LocalDate dataInicioDaExperiencia;
+
+    private LocalDate dataFimDaExperiencia;
+
+    @NotNull
+    private List<Idiomas> idiomas;
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
@@ -50,12 +62,21 @@ public class Aluno extends RepresentationModel<Aluno> {
         this.email = cadastroAlunoDTO.email();
         this.cpf = cadastroAlunoDTO.cpf();
         this.dataNascimento = cadastroAlunoDTO.dataNascimento();
+        this.dataDeConclusaoDaGraduacao = cadastroAlunoDTO.dataDeConclusaoDaGraduacao();
+        this.dataInicioDaExperiencia = cadastroAlunoDTO.dataInicioDaExperiencia();
+        this.dataFimDaExperiencia = cadastroAlunoDTO.dataFimDaExperiencia();
+        this.idiomas = cadastroAlunoDTO.idiomas();
         this.endereco = cadastroAlunoDTO.endereco();
     }
 
     public void atualizarAluno(AtualizarAlunoDTO atualizarAlunoDTO) {
         if(atualizarAlunoDTO.nome() != null) this.nome = atualizarAlunoDTO.nome();
         if(atualizarAlunoDTO.email() != null) this.email = atualizarAlunoDTO.email();
+        if(atualizarAlunoDTO.cpf() != null) this.cpf = atualizarAlunoDTO.cpf();
         if(atualizarAlunoDTO.dataNascimento() != null) this.dataNascimento = atualizarAlunoDTO.dataNascimento();
+        if(atualizarAlunoDTO.dataDeConclusaoDaGraduacao() != null) this.dataDeConclusaoDaGraduacao = atualizarAlunoDTO.dataDeConclusaoDaGraduacao();
+        if(atualizarAlunoDTO.dataInicioDaExperiencia() != null) this.dataInicioDaExperiencia = atualizarAlunoDTO.dataInicioDaExperiencia();
+        if(atualizarAlunoDTO.dataFimDaExperiencia() != null) this.dataFimDaExperiencia = atualizarAlunoDTO.dataFimDaExperiencia();
+        if(atualizarAlunoDTO.idiomas() != null) this.idiomas = atualizarAlunoDTO.idiomas();
     }
 }

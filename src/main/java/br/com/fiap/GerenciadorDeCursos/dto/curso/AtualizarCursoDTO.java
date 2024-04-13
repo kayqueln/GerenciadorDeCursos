@@ -1,12 +1,9 @@
 package br.com.fiap.GerenciadorDeCursos.dto.curso;
 
-import br.com.fiap.GerenciadorDeCursos.model.Materia;
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 public record AtualizarCursoDTO(
         @Size(max = 150)
@@ -14,6 +11,6 @@ public record AtualizarCursoDTO(
         @Size(max = 1000)
         String descricao,
         @FutureOrPresent
-        LocalDateTime dataDeInicio
+        LocalDate dataDeInicio
 ) {
 }

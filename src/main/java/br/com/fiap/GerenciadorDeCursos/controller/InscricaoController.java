@@ -42,7 +42,7 @@ public class InscricaoController {
             Inscricao inscricao = inscricaoService.inscreverUmAluno(cadastroInscricaoDTO);
             return ResponseEntity.status(201).body(new DetalhamentoInscricaoDTO(inscricao));
         }catch (CourseFullException | NotFoundResourceException e){
-            error = new ErrorMessage(e.getMessage());
+            error.setError(e.getMessage());
             return ResponseEntity.status(400).body(error);
         }
     }

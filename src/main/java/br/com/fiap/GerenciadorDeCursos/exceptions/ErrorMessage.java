@@ -13,4 +13,5 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 public class ErrorMessage {
     private String error;
+    private String observacao;
 }

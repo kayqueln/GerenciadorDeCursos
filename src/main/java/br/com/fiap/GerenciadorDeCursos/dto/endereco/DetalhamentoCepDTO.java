@@ -1,6 +1,6 @@
 package br.com.fiap.GerenciadorDeCursos.dto.endereco;
 
-public record CepResponse(
+public record DetalhamentoCepDTO(
          String cep,
          String logradouro,
          String complemento,

@@ -2,9 +2,11 @@ package br.com.fiap.GerenciadorDeCursos.dto.curso;
 
 import br.com.fiap.GerenciadorDeCursos.model.Curso;
 
-public record PropriedadesCursoDTO(Long id, String nome, String descricao) {
+import java.time.LocalDate;
+
+public record PropriedadesCursoDTO(Long id, String nome, String descricao, LocalDate dataDeInicio) {
 
     public PropriedadesCursoDTO(Curso curso) {
-        this(curso.getId(), curso.getNome(), curso.getDescricao());
+        this(curso.getId(), curso.getNome(), curso.getDescricao(), curso.getDataDeinicio());
     }
 }

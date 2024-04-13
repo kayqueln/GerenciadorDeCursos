@@ -4,6 +4,7 @@ package br.com.fiap.GerenciadorDeCursos.controller;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.AtualizarCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.CadastroCursoDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.curso.DetalhamentoCursoDTO;
+import br.com.fiap.GerenciadorDeCursos.exceptions.ErrorMessage;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
 import br.com.fiap.GerenciadorDeCursos.model.Aluno;
 import br.com.fiap.GerenciadorDeCursos.model.Curso;
@@ -34,6 +35,9 @@ import java.util.List;
 public class CursoController {
     @Autowired
     private CursoService cursoService;
+
+    @Autowired
+    private ErrorMessage error;
 
     @Operation(summary = "Busca os cursos na base de dados com Hateoas", responses = {
             @ApiResponse(responseCode = "200", description = "Sucesso",
@@ -67,7 +71,8 @@ public class CursoController {
             Curso curso = cursoService.salvarCurso(cadastroCursoDTO);
             return ResponseEntity.status(201).body(new DetalhamentoCursoDTO(curso));
         }catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -80,7 +85,8 @@ public class CursoController {
             List<Curso> cursos = cursoService.buscarTodosCursos();
             return ResponseEntity.status(200).body(cursos);
         }catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -96,7 +102,8 @@ public class CursoController {
             curso.add(link);
             return ResponseEntity.status(200).body(curso);
         }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -110,7 +117,8 @@ public class CursoController {
             Curso Curso = cursoService.atualizarCurso(id, atualizarCursoDTO);
             return ResponseEntity.status(200).body(Curso);
         }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -122,14 +130,20 @@ public class CursoController {
                     content = @Content(schema = @Schema(implementation = Aluno.class))),
             @ApiResponse(responseCode = "400", description = "Curso não encontrado")})
     @DeleteMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable Long id){
+    public ResponseEntity atualizar(@PathVariable Long id) {
         try {
             cursoService.deletarCurso(id);
             return ResponseEntity.status(204).build();
-        }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+        }catch (Exception e){
+            error.setError(e.getMessage());
+            error.setObservacao("Este endpoint não funciona por conta do 'CascadeType.PERSIST' solicitado na documentação.");
+            return ResponseEntity.status(500).body(error);
+        } catch (NotFoundResourceException e) {
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
+
 
 
     //Implementações do Hateoas

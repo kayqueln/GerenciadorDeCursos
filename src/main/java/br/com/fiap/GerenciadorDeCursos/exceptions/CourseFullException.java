@@ -1,5 +1,8 @@
 package br.com.fiap.GerenciadorDeCursos.exceptions;
 
+import lombok.Getter;
+
+@Getter
 public class CourseFullException extends Exception {
 
     private String message;
@@ -7,9 +10,5 @@ public class CourseFullException extends Exception {
     public CourseFullException(String message) {
         super(message);
         this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

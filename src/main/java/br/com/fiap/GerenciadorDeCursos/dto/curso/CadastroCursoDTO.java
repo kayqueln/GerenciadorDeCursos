@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public record CadastroCursoDTO(
         String descricao,
         @NotNull
         @FutureOrPresent
-        LocalDateTime dataDeInicio,
+        LocalDate dataDeInicio,
         List<CadastroMateriasDTO> materias,
         List<CadastroProfessorDTO> professores
 ) {

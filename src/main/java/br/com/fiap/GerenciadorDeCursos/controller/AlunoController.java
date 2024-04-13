@@ -52,7 +52,8 @@ public class AlunoController {
             List<Aluno> alunos = alunoService.buscarTodosAlunos();
             return ResponseEntity.status(200).body(alunos);
         }catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -66,7 +67,8 @@ public class AlunoController {
             Aluno aluno = alunoService.buscarAlunoPorId(id);
             return ResponseEntity.status(200).body(aluno);
         }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -79,8 +81,9 @@ public class AlunoController {
         try {
             Aluno aluno = alunoService.atualizarAluno(id, atualizarAlunoDTO);
             return ResponseEntity.status(200).body(aluno);
-        }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+        }catch (NotFoundResourceException | Exception e){
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -94,7 +97,8 @@ public class AlunoController {
             alunoService.deletarAluno(id);
             return ResponseEntity.status(204).build();
         }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 }

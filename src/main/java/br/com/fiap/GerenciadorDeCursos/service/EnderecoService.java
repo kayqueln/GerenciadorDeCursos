@@ -24,7 +24,9 @@ public class EnderecoService {
     public Endereco buscarPorId(Long id) throws NotFoundResourceException {
         Optional<Endereco> endereco = enderecoRepository.findById(id);
 
-        if (!endereco.isPresent()) throw new NotFoundResourceException("Erro ao buscar endereço");
+        if (!endereco.isPresent()) {
+            throw new NotFoundResourceException("Erro ao buscar endereço");
+        }
 
         return endereco.get();
     }

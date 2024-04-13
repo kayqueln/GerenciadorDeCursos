@@ -4,6 +4,7 @@ package br.com.fiap.GerenciadorDeCursos.controller;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.AtualizarProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.CadastroProfessorDTO;
 import br.com.fiap.GerenciadorDeCursos.dto.professor.DetalhamentoProfessorDTO;
+import br.com.fiap.GerenciadorDeCursos.exceptions.ErrorMessage;
 import br.com.fiap.GerenciadorDeCursos.exceptions.NotFoundResourceException;
 import br.com.fiap.GerenciadorDeCursos.model.Professor;
 import br.com.fiap.GerenciadorDeCursos.service.ProfessorService;
@@ -30,6 +31,9 @@ public class ProfessorController {
     @Autowired
     private ProfessorService professorService;
 
+    @Autowired
+    private ErrorMessage error;
+
     @Operation(summary = "Cadastra um professor na base de dados", responses = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
                     content = @Content(schema = @Schema(implementation = Professor.class))),
@@ -40,7 +44,8 @@ public class ProfessorController {
             DetalhamentoProfessorDTO Professors = professorService.salvarProfessor(cadastroProfessorDTO);
             return ResponseEntity.status(201).body(Professors);
         }catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -53,7 +58,8 @@ public class ProfessorController {
             List<Professor> Professors = professorService.buscarTodosProfessors();
             return ResponseEntity.status(200).body(Professors);
         }catch (Exception e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -69,7 +75,8 @@ public class ProfessorController {
             professor.add(link);
             return ResponseEntity.status(200).body(professor);
         }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -83,7 +90,8 @@ public class ProfessorController {
             Professor Professor = professorService.atualizarProfessor(id, atualizarProfessorDTO);
             return ResponseEntity.status(200).body(Professor);
         }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 
@@ -92,12 +100,17 @@ public class ProfessorController {
                     content = @Content(schema = @Schema(implementation = Professor.class))),
             @ApiResponse(responseCode = "400", description = "Professor não encontrado")})
     @DeleteMapping("/{id}")
-    public ResponseEntity atualizar(@PathVariable Long id){
+    public ResponseEntity deletar(@PathVariable Long id){
         try {
             professorService.deletarProfessor(id);
             return ResponseEntity.status(204).build();
-        }catch (NotFoundResourceException e){
-            return ResponseEntity.status(400).body(e.getMessage());
+        }catch (Exception e){
+            error.setError(e.getMessage());
+            error.setObservacao("Este endpoint funciona parcialmente por conta do 'CascadeType.MERGE' solicitado na documentação.");
+            return ResponseEntity.status(400).body(error);
+        } catch (NotFoundResourceException e){
+            error.setError(e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 

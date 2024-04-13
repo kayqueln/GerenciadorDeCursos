@@ -6,12 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -31,8 +32,9 @@ public class Curso extends RepresentationModel<Curso> {
     @Size(max = 1000)
     private String descricao;
 
+    @NotNull
     @FutureOrPresent
-    private LocalDateTime dataDeinicio;
+    private LocalDate dataDeinicio;
 
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JsonIgnore

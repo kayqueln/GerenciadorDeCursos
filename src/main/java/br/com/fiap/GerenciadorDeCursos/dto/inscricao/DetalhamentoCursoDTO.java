@@ -11,12 +11,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetalhamentoCursoModel {
+public class DetalhamentoCursoDTO {
     private Long idCurso;
     private String nome;
     private String descricao;
 
-    public DetalhamentoCursoModel(Curso curso) {
+    public DetalhamentoCursoDTO(Curso curso) {
         this.idCurso = curso.getId();
         this.nome = curso.getNome();
         this.descricao = curso.getDescricao();

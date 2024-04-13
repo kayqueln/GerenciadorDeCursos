@@ -62,6 +62,16 @@
 			<groupId>org.springframework.hateoas</groupId>
 			<artifactId>spring-hateoas</artifactId>
 		</dependency>
+
+		<!--Validador de CPF-->
+		<dependency>
+			<groupId>br.com.caelum.stella</groupId>
+			<artifactId>caelum-stella-core</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<build>
